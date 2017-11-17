@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'municipality',
     'naturalUser',
     'ong',
-    'debug_toolbar',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [

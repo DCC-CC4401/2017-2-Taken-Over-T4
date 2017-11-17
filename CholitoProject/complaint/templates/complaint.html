@@ -5,7 +5,7 @@
 {% block content-header %}Subir Denuncia{% endblock %}
 
 {% block content %}
-    <form method="POST" enctype="multipart/form-data" action="{% url 'make-complaint' %}">
+    <form  method="POST" enctype="multipart/form-data" action="{% url 'make-complaint' %}">
 
         {% csrf_token %}
         <div class="form-group">
@@ -58,18 +58,50 @@
             </div>
         </div>
 
-        {{ form.directions }}
+
+
+
+
+<p id="demo"></p>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+
+    getLocation();
+});
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    document.getElementById("id_complaint-lat").value = (Math.round(1000000*position.coords.latitude))/1000000;
+    document.getElementById("id_complaint-lng").value = (Math.round(1000000*position.coords.longitude))/1000000;
+}
+
+</script>
+
         {{ form.lat }}
         {{ form.lng }}
+        {{ form.directions }}
+
         <div class="form-group">
             <div class="col-sm-10">
                 <br>
 
-                <input type="submit" class="btn btn-primary" value="Envia denuncia"/>
+                <input type="submit" class="btn btn-primary" value="Envia denuncia" />
                 <input type="button" class="btn btn-default" value="Cancelar"/>
             </div>
         </div>
 
     </form>
+
+    <button onclick="getLocation()">Try It</button>
 
 {% endblock %}
