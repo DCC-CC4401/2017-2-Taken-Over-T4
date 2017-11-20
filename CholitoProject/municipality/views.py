@@ -5,6 +5,7 @@ from complaint.models import Complaint, AnimalType
 from django.contrib.auth.mixins import PermissionRequiredMixin, \
     LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.utils.timezone import make_aware
 from django.views import View
 import datetime
 
@@ -49,11 +50,11 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
         user = get_user_index(request.user)
 
         today = datetime.datetime.now()
-        timeframe = {'0': today - datetime.timedelta(days=7),
-                     '1': today - datetime.timedelta(days=30),
-                     '2': today - datetime.timedelta(days=90),
-                     '3': today - datetime.timedelta(days=180),
-                     '4': today - datetime.timedelta(days=365)}
+        timeframe = {'0': make_aware(today - datetime.timedelta(days=7)),
+                     '1': make_aware(today - datetime.timedelta(days=30)),
+                     '2': make_aware(today - datetime.timedelta(days=90)),
+                     '3': make_aware(today - datetime.timedelta(days=180)),
+                     '4': make_aware(today - datetime.timedelta(days=365))}
         captionTranslate = {
             '0': 'la ultima semana',
             '1': 'el ultimo mes',
@@ -93,15 +94,16 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
             "subCaption": user.municipality.name,
             "showPercentValues": "1",
             "bgColor": "#FFFFFF",
+            #"pieRadius":"80",
             "theme": "zune"
         }
         dataSource['data'] = []
         complaints = Complaint.objects.filter(municipality=user.municipality)
-        animaltypes = AnimalType.objects.all()
-        for type in animaltypes:
+        complaintTypes = Complaint.COMPLAINT_OPTIONS
+        for (id,type) in complaintTypes:
             data = {}
-            data['label'] = type.name
-            data['value'] = complaints.filter(animal_type=type).count()
+            data['label'] = type
+            data['value'] = complaints.filter(case=id).count()
             dataSource['data'].append(data)
         return FusionCharts("pie2D", "ex1", "100%", "100%", "chart-1", "json", dataSource)
 
