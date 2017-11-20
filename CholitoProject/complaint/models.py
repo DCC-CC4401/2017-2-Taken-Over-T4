@@ -16,7 +16,7 @@ class AnimalType(models.Model):
 class Complaint(models.Model):
     COMPLAINT_OPTIONS = (
         (1, "Abandono en la calle"),
-        (2, "Exposición a temperaturas extremas"),
+        (2, "Exposicion a temperaturas<br>extremas"),
         (3, "Falta de agua"),
         (4, "Falta de comida"),
         (5, "Violencia"),
