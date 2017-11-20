@@ -6,80 +6,13 @@
 {% block content-header %}Adoptar{% endblock %}
 
 {% block content %}
-        <div style ="height:500px;width:500px">
-        <div id="map" style="height:100%; width:100%;position: absolute;"></div>
 
-        </div>
+
+
+
+
 {% endblock %}
 
-<!-- REQUIRED JS SCRIPTS -->
-
-    <!-- jQuery 3 -->
-    <script src="{% static 'CholitoProject/js/jquery.min.js' %}"></script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="{% static 'CholitoProject/js/bootstrap.min.js' %}"></script>
-    <!-- AdminLTE App -->
-    <script src="{% static 'CholitoProject/js/adminlte.min.js' %}"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-Both of these plugins are recommended to enhance the
-user experience.
--->
-<script>
-    function myMap() {
-            var mapCanvas = document.getElementById("map");
-            var myCenter = new google.maps.LatLng(-33.457394,-70.664601);
-            var centerOne= new google.maps.LatLng(-33.453291,-70.667269);
-            var centerTwo = new google.maps.LatLng(-33.455908, -70.674335);
-            var centerThree = new google.maps.LatLng(-33.466617, -70.676903);
-            var mapOptions = {center: myCenter, zoom: 15};
-            var map = new google.maps.Map(mapCanvas,mapOptions);
-            console.log("Hola");
-            /*var myCity = new google.maps.Circle({
-                center: myCenter,
-                radius: 15,
-                strokeColor: "#0000FF",
-                strokeOpacity: 0.7,
-                strokeWeight: 2,
-                fillColor: "#0000FF",
-                fillOpacity: 0.4
-            });
-            myCity.setMap(map);
-
-            var miPos = {lat: -33.457775800, lng: -70.663943800};
-
-            placeMarker(map, miPos);
-            /*
-            google.maps.event.addListener(map, 'click', function(event) {
-                placeMarker(map, event.latLng);
-            });
-            *//*
-            var infowindow = new google.maps.InfoWindow({
-                content:"ONG Favorita"
-            });
-            var markerOne = new google.maps.Marker({
-                position: centerOne,
-                icon: "{% static 'AppLeyCholito/img/favorito.jpg' %}"
-            });
-
-            markerOne.setMap(map);
-            infowindow.open(map,markerOne);*/
-        }
-
-        function placeMarker(map, location) {
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            var infowindow = new google.maps.InfoWindow({
-                content: 'Estás Aquí'
-            });
-            infowindow.open(map,marker);
-        }
-</script>
-
-<!-- Mapa de google-->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC70-BsyYA10DJW80qbMDL9VHZBzKUKDMs&callback=myMap"></script>
 
