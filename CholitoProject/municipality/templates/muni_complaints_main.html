@@ -18,7 +18,7 @@
         <tbody>
         {% for complaint in complaints %}
             <tr class="clickable-row" data-href="{% url 'see-complaint' complaint.pk %}">
-                <th>{{ complaint.get_case_display }}</th>
+                <th>{{ complaint.get_case_display|safe }}</th>
                 <th>{{ complaint.animal_type }}</th>
                 <th>{{ complaint.directions }}</th>
                 <th>{{ complaint.get_wounded_display }}</th>
