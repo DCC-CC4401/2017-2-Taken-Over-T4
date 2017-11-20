@@ -5,3 +5,4 @@ from complaint import models
 admin.site.register(models.ComplaintImage)
 admin.site.register(models.Complaint)
 admin.site.register(models.AnimalType)
+

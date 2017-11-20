@@ -9,7 +9,7 @@ from complaint.models import Complaint, ComplaintImage, AnimalType
 
 class ComplaintView(View):
     form = ComplaintForm(
-        initial={'lat': 20, 'lng': 20, 'directions': "beauchef"}, prefix='complaint')
+        initial={'lat':20, 'lng': 20,'directions': "beauchef"}, prefix='complaint')
     image_form = ImageForm(prefix='image')
     animals = AnimalType.objects.all()
     context = {'form': form, 'image_form': image_form, 'animals': animals}
@@ -26,10 +26,12 @@ class ComplaintSendView(View):
     def post(self, request, **kwargs):
         form = ComplaintForm(request.POST, prefix='complaint')
         image_form = ImageForm(request.POST, request.FILES, prefix='image')
+
         if form.is_valid():
             complaint = form.save(commit=False)
             complaint.status = 1
             complaint.save()
+
             if image_form.is_valid():
                 ComplaintImage.objects.create(
                     complaint=complaint, image=image_form.cleaned_data.get('complaint_image'))
