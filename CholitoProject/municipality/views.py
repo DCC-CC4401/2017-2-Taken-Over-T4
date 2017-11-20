@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 import datetime
 
-from CholitoProject.municipality.forms import graphForm
+from municipality.forms import graphForm
 
 
 class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
@@ -49,17 +49,17 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
         user = get_user_index(request.user)
 
         today = datetime.datetime.now()
-        timeframe = {'last_week': today - datetime.timedelta(days=7),
-                     'last_month': today - datetime.timedelta(days=30),
-                     'last_quarter': today - datetime.timedelta(days=90),
-                     'last_semester': today - datetime.timedelta(days=180),
-                     'last_year': today - datetime.timedelta(days=365)}
+        timeframe = {'0': today - datetime.timedelta(days=7),
+                     '1': today - datetime.timedelta(days=30),
+                     '2': today - datetime.timedelta(days=90),
+                     '3': today - datetime.timedelta(days=180),
+                     '4': today - datetime.timedelta(days=365)}
         captionTranslate = {
-            'last_week': 'la ultima semana',
-            'last_month': 'el ultimo mes',
-            'last_quarter': 'el ultimo trimestre',
-            'last_semester': 'los ultimos seis meses',
-            'last_year': 'el ultimo año',
+            '0': 'la ultima semana',
+            '1': 'el ultimo mes',
+            '2': 'el ultimo trimestre',
+            '3': 'los ultimos seis meses',
+            '4': 'el ultimo año',
         }
         fromDate = timeframe[id]
 
@@ -111,7 +111,7 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
         graph1 = self.graphByType(request)
 
         # grafico 2
-        graph2 = self.graphByDate(request, "last_week")
+        graph2 = self.graphByDate(request, '0')
         self.context['c_user'] = user
         self.context['output'] = graph1.render()
         self.context['output2'] = graph2.render()
@@ -122,7 +122,7 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
         user = get_user_index(request.user)
         form = graphForm(request.POST)
         if form.is_valid():
-            selected_option = form.cleaned_data['choices']
+            selected_option = form.cleaned_data['periodo']
             # Grafico 1
             graph1 = self.graphByType(request)
 
@@ -131,7 +131,7 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
             self.context['c_user'] = user
             self.context['output'] = graph1.render()
             self.context['output2'] = graph2.render()
-            self.context['form'] = graphForm()
+            self.context['form'] = graphForm(initial={'periodo':selected_option})
             return render(request, self.template_name, context=self.context)
 
 
