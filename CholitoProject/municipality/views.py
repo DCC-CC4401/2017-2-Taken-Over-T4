@@ -1,9 +1,14 @@
+from CholitoProject.userManager import get_user_index
+from CholitoProject.fusioncharts import FusionCharts
+
+from complaint.models import Complaint, AnimalType
+from django.contrib.auth.mixins import PermissionRequiredMixin, \
+    LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth.mixins import PermissionRequiredMixin,\
-    LoginRequiredMixin
-from complaint.models import Complaint
-from CholitoProject.userManager import get_user_index
+import datetime
+
+from CholitoProject.municipality.forms import graphForm
 
 
 class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
@@ -40,10 +45,94 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = 'muni_statistics.html'
     context = {}
 
+    def graphByDate(self, request, id):
+        user = get_user_index(request.user)
+
+        today = datetime.datetime.now()
+        timeframe = {'last_week': today - datetime.timedelta(days=7),
+                     'last_month': today - datetime.timedelta(days=30),
+                     'last_quarter': today - datetime.timedelta(days=90),
+                     'last_semester': today - datetime.timedelta(days=180),
+                     'last_year': today - datetime.timedelta(days=365)}
+        captionTranslate = {
+            'last_week': 'la ultima semana',
+            'last_month': 'el ultimo mes',
+            'last_quarter': 'el ultimo trimestre',
+            'last_semester': 'los ultimos seis meses',
+            'last_year': 'el ultimo año',
+        }
+        fromDate = timeframe[id]
+
+        data = Complaint.objects.filter(datetime__gte=fromDate)
+        dataSource = {}
+        dataSource['chart'] = {
+            "caption": "Denuncias recibidas en " + captionTranslate[id],
+            "subCaption": user.municipality.name,
+            "xAxisName":"Estado de denuncias",
+            "yAxisNAme":"Cantidad",
+            "showPercentValues": "1",
+            "bgColor": "#FFFFFF",
+            "theme": "fint"
+        }
+        dataSource['data'] = []
+
+        for (id,complaintType) in Complaint.COMPLAINT_STATUS:
+            temp = {}
+            temp['label'] = complaintType
+            temp['value'] = data.filter(status=id).count()
+            dataSource['data'].append(temp)
+        graph = FusionCharts("column2D", "ex2", "100%", "100%", "chart-2", "json", dataSource)
+        return graph
+
+    def graphByType(self,request):
+        user = get_user_index(request.user)
+        # Grafico 1
+        dataSource = {}
+        dataSource['chart'] = {
+            "caption": "Denuncias recibidas hasta el momento",
+            "subCaption": user.municipality.name,
+            "showPercentValues": "1",
+            "bgColor": "#FFFFFF",
+            "theme": "zune"
+        }
+        dataSource['data'] = []
+        complaints = Complaint.objects.filter(municipality=user.municipality)
+        animaltypes = AnimalType.objects.all()
+        for type in animaltypes:
+            data = {}
+            data['label'] = type.name
+            data['value'] = complaints.filter(animal_type=type).count()
+            dataSource['data'].append(data)
+        return FusionCharts("pie2D", "ex1", "100%", "100%", "chart-1", "json", dataSource)
+
     def get(self, request, **kwargs):
         user = get_user_index(request.user)
+        # Grafico 1
+        graph1 = self.graphByType(request)
+
+        # grafico 2
+        graph2 = self.graphByDate(request, "last_week")
         self.context['c_user'] = user
+        self.context['output'] = graph1.render()
+        self.context['output2'] = graph2.render()
+        self.context['form'] = graphForm()
         return render(request, self.template_name, context=self.context)
+
+    def post(self,request,**kwargs):
+        user = get_user_index(request.user)
+        form = graphForm(request.POST)
+        if form.is_valid():
+            selected_option = form.cleaned_data['choices']
+            # Grafico 1
+            graph1 = self.graphByType(request)
+
+            # grafico 2
+            graph2 = self.graphByDate(request, selected_option)
+            self.context['c_user'] = user
+            self.context['output'] = graph1.render()
+            self.context['output2'] = graph2.render()
+            self.context['form'] = graphForm()
+            return render(request, self.template_name, context=self.context)
 
 
 class UserDetail(PermissionRequiredMixin, LoginRequiredMixin, View):

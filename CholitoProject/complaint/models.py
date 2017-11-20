@@ -1,3 +1,6 @@
+import datetime as datetime
+
+import django
 from django.db import models
 
 from municipality.models import Municipality
@@ -48,6 +51,9 @@ class Complaint(models.Model):
     gender = models.SmallIntegerField(choices=GENDER_OPTIONS)
     wounded = models.BooleanField(choices=WOUND_OPTIONS)
     color = models.TextField(max_length=50)
+    datetime = models.DateTimeField(auto_now_add=True, null=False, blank=False)
+    # The next line is only for testing purposes
+    datetime.editable = True
     municipality = models.ForeignKey(Municipality)
 
     def __str__(self):
