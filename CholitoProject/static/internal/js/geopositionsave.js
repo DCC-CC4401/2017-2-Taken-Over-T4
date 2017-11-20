@@ -14,8 +14,8 @@ function getLocation() {
 }
 
 function showPosition(position) {
-    var latdata = (Math.round(10000000*position.coords.latitude))/10000000;
-    var lngdata = (Math.round(10000000*position.coords.longitude))/10000000;
+    var latdata = (Math.round(100000000*position.coords.latitude))/100000000;
+    var lngdata = (Math.round(100000000*position.coords.longitude))/100000000;
 
     document.getElementById("id_complaint-lat").value = latdata;
     document.getElementById("id_complaint-lng").value = lngdata;
