@@ -39,6 +39,7 @@
             icon: image,
             title: '{{ mark.name }}',
         });
+            marker.addListener('click',goToONG);
     {% endfor %}
     // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -68,7 +69,13 @@
                               'Error: The Geolocation service failed.' :
                               'Error: Your browser doesn\'t support geolocation.');
       }
-
+      function goToONG(){
+          {% if user.is_authenticated %}
+             window.location.href = {% url 'user-ong-in' %};
+          {% else %}
+             window.location.href = {% url 'user-ong-out' %};
+          {% endif %}
+      }
     </script>>
 
     <script async defer
