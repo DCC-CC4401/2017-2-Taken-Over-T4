@@ -30,7 +30,16 @@
     d.style.width = '1115px';
     d.style.display = 'block';
     map.setZoom(15);
-
+    {% for mark in zone %}
+        var point = new google.maps.LatLng({{mark.position.latitude}},{{mark.position.longitude}});
+            var image = '{% static 'images/marker.png' %}';
+            var marker = new google.maps.Marker({
+            position: point,
+            map: map,
+            icon: image,
+            title: '{{ mark.name }}',
+        });
+    {% endfor %}
     // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
