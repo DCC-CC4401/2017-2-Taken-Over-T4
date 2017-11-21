@@ -9,6 +9,7 @@
 
     <div id="map"></div>
 
+    <!--suppress JSAnnotator -->
     <script>
     $( document ).ready(function() {
     initMap();
@@ -30,17 +31,8 @@
     d.style.width = '1115px';
     d.style.display = 'block';
     map.setZoom(15);
-    {% for mark in zone %}
-        var point = new google.maps.LatLng({{mark.position.latitude}},{{mark.position.longitude}});
-            var image = '{% static 'images/marker.png' %}';
-            var marker = new google.maps.Marker({
-            position: point,
-            map: map,
-            icon: image,
-            title: '{{ mark.name }}',
-        });
-            marker.addListener('click',goToONG);
-    {% endfor %}
+
+
     // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -61,7 +53,41 @@
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
+
+        {% for mark in zone %}
+            normalong(map,{{mark.lat}},{{mark.lng}});
+        {% endfor %}
+
+        {% for ongs in favourites %}
+            favong(map,{{ongs.ong.lat}},{{ongs.ong.lng}});
+        {% endfor %}
       }
+
+
+      function normalong(map, latdata, lngdata) {
+        var pointcom = {lat:latdata,lng:lngdata};
+            var imagecom = {url:'{% static 'images/marker.png' %}',scaledSize: new google.maps.Size(30, 30)};
+            var markercom = new google.maps.Marker({
+            position: pointcom,
+            map: map,
+            icon: imagecom,
+
+        });
+            markercom.addListener('click',goToONG);
+      }
+      function favong(map, latdata, lngdata){
+
+            var pointfav = {lat:latdata,lng:lngdata};
+            var imagefav = {url: '{% static 'images/estrella.png' %}',scaledSize: new google.maps.Size(40, 40)};
+            var markerfav = new google.maps.Marker({
+            position: pointfav,
+            map: map,
+            icon: imagefav,
+
+        });
+            markerfav.addListener('click',goToONG);
+    }
+
 
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
@@ -69,6 +95,7 @@
                               'Error: The Geolocation service failed.' :
                               'Error: Your browser doesn\'t support geolocation.');
       }
+
       function goToONG(){
           {% if user.is_authenticated %}
              window.location.href = {% url 'user-ong-in' %};
