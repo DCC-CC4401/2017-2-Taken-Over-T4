@@ -19,7 +19,7 @@ class ONG(models.Model):
 
 
 class ONGUser(User):
-    user = models.OneToOneField(User)
+    #user = models.OneToOneField(User)
     ong = models.ForeignKey('ONG')
 
     def __str__(self):
