@@ -2,10 +2,14 @@ from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.shortcuts import render
 
+from ong.models import ONG
+
+def default_avatar():
+    return 'n_users/avatar/defaultuser.png'
 
 class NaturalUser(models.Model):
     user = models.OneToOneField(User)
-    avatar = models.ImageField(upload_to='n_users/avatar/')
+    avatar = models.ImageField(upload_to='n_users/avatar/', default='n_users/avatar/defaultuser.png')
 
     def save(self, *args, **kwargs):
         super(NaturalUser, self).save(*args, **kwargs)
@@ -19,3 +23,7 @@ class NaturalUser(models.Model):
 
     def get_index(self, request, context=None):
         return render(request, 'index.html', context=context)
+
+class ONGLike(models.Model):
+    natural_user = models.ForeignKey(NaturalUser)
+    ong = models.ForeignKey(ONG)
