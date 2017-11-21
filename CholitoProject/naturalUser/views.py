@@ -10,6 +10,8 @@ from complaint.models import AnimalType
 from naturalUser.forms import SignUpForm, AvatarForm
 from naturalUser.models import NaturalUser
 
+from ong.models import ONG
+
 
 class IndexView(TemplateView):
     context = {}
@@ -19,6 +21,7 @@ class IndexView(TemplateView):
         self.context['c_user'] = c_user
         animals = AnimalType.objects.all()
         self.context['animals'] = animals
+        self.context['zone'] = ONG.objects.all()
         if c_user is None:
             return render(request, 'index.html', context=self.context)
         return c_user.get_index(request, context=self.context)

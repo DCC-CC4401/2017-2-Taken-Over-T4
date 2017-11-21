@@ -53,7 +53,7 @@ class Complaint(models.Model):
     color = models.TextField(max_length=50)
     datetime = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     # The next line is only for testing purposes
-    datetime.editable = True
+    #datetime.editable = True
     municipality = models.ForeignKey(Municipality)
 
     def __str__(self):
